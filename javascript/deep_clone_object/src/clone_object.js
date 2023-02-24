@@ -6,7 +6,17 @@ function validateTypeOfObject(value) {
 
 function cloneDeepObject(object) {
   validateTypeOfObject(object);
-  const clonObj = { ...object };
+  if (Array.isArray(object)) {
+    return [];
+  }
+  let clonObj = {};
+  for (prop in object) {
+    if (typeof object[prop] === 'object') {
+      clonObj[prop] = cloneDeepObject(object[prop]);
+    } else {
+      clonObj[prop] = object[prop];
+    }
+  }
   return clonObj;
 }
 

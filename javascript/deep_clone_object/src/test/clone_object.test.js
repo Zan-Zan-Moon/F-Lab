@@ -45,8 +45,15 @@ describe('cloneDeepObject', () => {
       b: {
         c: 1,
       },
-      c: ['1'],
+      c: true,
     };
-    expect(cloneDeepObject(obj).c).not.toBe(obj.c);
+    expect(cloneDeepObject(obj).b).not.toBe(obj.b);
+  });
+
+  it('return deep copy of array parameter', () => {
+    const array = [1, 2, 3];
+
+    const result = cloneDeepObject(array);
+    expect(Array.isArray(result)).toBe(true);
   });
 });

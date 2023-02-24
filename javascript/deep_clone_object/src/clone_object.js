@@ -4,20 +4,33 @@ function validateTypeOfObject(value) {
   }
 }
 
-function cloneDeepObject(object) {
-  validateTypeOfObject(object);
-  if (Array.isArray(object)) {
-    return [];
+function cloneDeepArray(array) {
+  const result = array.map((value) => value);
+  return result;
+}
+
+function cloneDeepObject(objectTypedValue) {
+  validateTypeOfObject(objectTypedValue);
+
+  if (Array.isArray(objectTypedValue)) {
+    const result = cloneDeepArray(objectTypedValue);
+    return result;
   }
-  let clonObj = {};
-  for (prop in object) {
-    if (typeof object[prop] === 'object') {
-      clonObj[prop] = cloneDeepObject(object[prop]);
+
+  let cloneObj = {};
+
+  for (prop in objectTypedValue) {
+    if (typeof objectTypedValue[prop] === 'object') {
+      if (Array.isArray(objectTypedValue)) {
+        cloneObj[prop] = cloneDeepArray(objectTypedValue[prop]);
+      } else {
+        cloneObj[prop] = cloneDeepObject(objectTypedValue[prop]);
+      }
     } else {
-      clonObj[prop] = object[prop];
+      cloneObj[prop] = objectTypedValue[prop];
     }
   }
-  return clonObj;
+  return cloneObj;
 }
 
 module.exports = cloneDeepObject;

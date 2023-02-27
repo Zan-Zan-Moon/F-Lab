@@ -146,8 +146,11 @@ describe('cloneDeepObjectTypeValue', () => {
     expect(weakCopyObj).not.toBe(obj);
     expect(weakCopyObj.object).toBe(obj.object);
     expect(weakCopyObj.array).toBe(obj.array);
+    expect(weakCopyObj.array.array1).toBe(obj.array.array1);
     expect(deepCopyObj.object).not.toBe(obj.object);
     expect(deepCopyObj.array).not.toBe(obj.array);
+    expect(deepCopyObj.array.array1).not.toBe(obj.array.array1);
+    expect(deepCopyObj.array.array1[2]).not.toBe(obj.array.array1[2]);
   });
 
   it('return Date type of value', () => {

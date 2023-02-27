@@ -34,7 +34,7 @@ function cloneDeepObject(obj) {
   return deepCopiedObj;
 }
 
-function cloneObject(objectTypedValue) {
+function cloneDeepObjectTypeValue(objectTypedValue) {
   validateTypeOfObject(objectTypedValue);
 
   const result = objectTypedValue;
@@ -50,4 +50,4 @@ function cloneObject(objectTypedValue) {
   return result;
 }
 
-module.exports = { cloneObject, cloneDeepArray, cloneDeepObject };
+module.exports = { cloneDeepObjectTypeValue, cloneDeepArray, cloneDeepObject };

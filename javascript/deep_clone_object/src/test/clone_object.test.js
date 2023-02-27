@@ -1,112 +1,8 @@
 const {
-  cloneObject,
+  cloneDeepObjectTypeValue,
   cloneDeepArray,
   cloneDeepObject,
 } = require('../clone_object.js');
-
-describe('cloneDeepObject', () => {
-  it('returns object type', () => {
-    const obj = {
-      a: 1,
-      b: '가',
-    };
-
-    expect(typeof cloneObject(obj)).toBe('object');
-  });
-
-  it('throws error if parameter type is not object', () => {
-    const number = 1;
-    const string = '가';
-    const boolean = true;
-
-    expect(() => {
-      cloneObject(number);
-    }).toThrow();
-
-    expect(() => {
-      cloneObject(string);
-    }).toThrow();
-
-    expect(() => {
-      cloneObject(boolean);
-    }).toThrow();
-  });
-
-  it('return value is not same as parameter value', () => {
-    const obj = {
-      a: 1,
-      b: {
-        c: 1,
-      },
-      c: ['1'],
-    };
-    expect(cloneObject(obj)).not.toBe(obj);
-  });
-
-  it('return deep copy of obj parameter', () => {
-    const obj = {
-      a: 1,
-      b: {
-        c: 1,
-      },
-      c: true,
-    };
-    expect(cloneObject(obj).b).not.toBe(obj.b);
-  });
-
-  it('return deep copy of array parameter', () => {
-    const array = [{ a: 1 }, 2, 3];
-    const b = array;
-
-    const result = cloneObject(array);
-
-    expect(Array.isArray(result)).toBe(true);
-    expect(result).not.toBe(array);
-  });
-
-  it('copy 중복 객체, 배열', () => {
-    const obj = {
-      a: 1,
-      b: {
-        c: 1,
-      },
-      c: { a: [1, 2, { a: 2, b: [2, 3] }] },
-    };
-
-    const cobyObj = obj;
-    const weakCopyObj = {};
-    weakCopyObj.a = obj.a;
-    weakCopyObj.b = obj.b;
-    weakCopyObj.c = obj.c;
-
-    const deepCopyObj = cloneObject(obj);
-
-    expect(cobyObj).toBe(obj);
-    expect(deepCopyObj).toStrictEqual(obj);
-    expect(deepCopyObj).not.toBe(obj);
-    expect(weakCopyObj).not.toBe(obj);
-    expect(weakCopyObj.b).toBe(obj.b);
-    expect(weakCopyObj.c).toBe(obj.c);
-    expect(deepCopyObj.b).not.toBe(obj.b);
-    expect(deepCopyObj.c).not.toBe(obj.c);
-  });
-
-  it('return Date type of value', () => {
-    const date = new Date();
-
-    const cloneDate = cloneObject(date);
-
-    expect(date === cloneDate).toBe(true);
-  });
-
-  it('return Map type of value', () => {
-    const map = new Map();
-
-    const cloneMap = cloneObject(map);
-
-    expect(map === cloneMap).toBe(true);
-  });
-});
 
 describe('cloneDeepArray', () => {
   it('return deep clone array', () => {
@@ -138,26 +34,135 @@ describe('cloneDeepArray', () => {
 
 describe('cloneDeepOject', () => {
   it('return deep clone object', () => {
-    const obj = { a: 1, b: { c: 1 } };
+    const obj = { number: 1, object: { number1: 1 } };
 
     const copyObj = { ...obj };
 
     const copyDeepObj = cloneDeepObject(obj);
 
-    expect(copyObj.b).toBe(obj.b);
+    expect(copyObj.object).toBe(obj.object);
 
-    expect(copyDeepObj.b).not.toBe(obj.b);
+    expect(copyDeepObj.object).not.toBe(obj.object);
   });
 
   it('return deep clone object that includes array value', () => {
-    const obj = { a: 1, b: [1, 2] };
+    const obj = { number: 1, array: [1, 2] };
 
     const copyObj = { ...obj };
 
     const copyDeepObj = cloneDeepObject(obj);
 
-    expect(copyObj.b).toBe(obj.b);
+    expect(copyObj.array).toBe(obj.array);
 
-    expect(copyDeepObj.b).not.toBe(obj.b);
+    expect(copyDeepObj.array).not.toBe(obj.array);
+  });
+});
+
+describe('cloneDeepObjectTypeValue', () => {
+  it('returns object type', () => {
+    const obj = {
+      number: 1,
+      string: '가',
+    };
+
+    const typeOfcloneObject = typeof cloneDeepObjectTypeValue(obj);
+
+    expect(typeOfcloneObject).toBe('object');
+  });
+
+  it('throws error if parameter type is not object', () => {
+    const number = 1;
+    const string = '가';
+    const boolean = true;
+
+    expect(() => {
+      cloneDeepObjectTypeValue(number);
+    }).toThrow();
+
+    expect(() => {
+      cloneDeepObjectTypeValue(string);
+    }).toThrow();
+
+    expect(() => {
+      cloneDeepObjectTypeValue(boolean);
+    }).toThrow();
+  });
+
+  it('return value that is not same as parameter value', () => {
+    const obj = {
+      number: 1,
+      object: {
+        number: 1,
+      },
+      array: ['1'],
+    };
+
+    const deepcopiedObject = cloneDeepObjectTypeValue(obj);
+
+    expect(deepcopiedObject).not.toBe(obj);
+  });
+
+  it('return deep copy of obj parameter', () => {
+    const obj = {
+      number: 1,
+      object: {
+        number: 1,
+      },
+      boolean: true,
+    };
+
+    const deepcopiedObject = cloneDeepObjectTypeValue(obj);
+
+    expect(deepcopiedObject.object).not.toBe(obj.object);
+  });
+
+  it('return deep copy of array parameter', () => {
+    const array = [{ number: 1 }, 2, 3];
+
+    const copiedArray = [...array];
+
+    const deepcopiedArray = cloneDeepObjectTypeValue(array);
+
+    expect(Array.isArray(deepcopiedArray)).toBe(true);
+    expect(copiedArray[0]).toBe(array[0]);
+    expect(deepcopiedArray[0]).not.toBe(array[0]);
+  });
+
+  it('deep copy object that has object and array properties', () => {
+    const obj = {
+      number: 1,
+      object: {
+        string: '가',
+      },
+      array: { array1: [1, 2, { number: 2, array2: [2, 3] }] },
+    };
+
+    const newObj = obj;
+    const weakCopyObj = { ...obj };
+    const deepCopyObj = cloneDeepObjectTypeValue(obj);
+
+    expect(newObj).toBe(obj);
+    expect(deepCopyObj).not.toBe(obj);
+    expect(weakCopyObj).not.toBe(obj);
+    expect(weakCopyObj.object).toBe(obj.object);
+    expect(weakCopyObj.array).toBe(obj.array);
+    expect(deepCopyObj.object).not.toBe(obj.object);
+    expect(deepCopyObj.array).not.toBe(obj.array);
+  });
+
+  it('return Date type of value', () => {
+    const date = new Date();
+
+    const cloneDate = cloneDeepObjectTypeValue(date);
+
+    expect(date === cloneDate).toBe(true);
+  });
+
+  it('return Map type of value', () => {
+    const map = new Map();
+
+    const cloneMap = cloneDeepObjectTypeValue(map);
+
+    expect(map === cloneMap).toBe(true);
   });
 });

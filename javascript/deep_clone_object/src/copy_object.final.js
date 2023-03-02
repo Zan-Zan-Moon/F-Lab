@@ -1,11 +1,18 @@
 const isDate = (value) => value instanceof Date ?? false;
+const isRegexp = (value) => value instanceof RegExp ?? false;
 const isArray = (value) => Array.isArray(value);
+const isSet = (value) => value instanceof Set ?? false;
+const isMap = (value) => value instanceof Map ?? false;
 const isObject = (value) => value instanceof Object ?? false;
 
-// Set, Map, Symbol, Object, Regex, TypedArray
+//  TypedArray
 
 function copyDate(value) {
   return new Date(value.getTime());
+}
+
+function copyRegexp(value) {
+  return new RegExp(value);
 }
 
 function copyArray(values) {
@@ -13,6 +20,16 @@ function copyArray(values) {
     arr[i] = deepCopy(item);
     return arr;
   }, []);
+}
+
+function copySet(value) {
+  const setToArr = [...value];
+  return new Set(copyArray(setToArr));
+}
+
+function copyMap(value) {
+  const mapToArr = [...value];
+  return new Map(copyArray(mapToArr));
 }
 
 function copyObject(value) {
@@ -29,8 +46,20 @@ const copyTable = [
     copy: copyDate,
   },
   {
+    validation: isRegexp,
+    copy: copyRegexp,
+  },
+  {
     validation: isArray,
     copy: copyArray,
+  },
+  {
+    validation: isSet,
+    copy: copySet,
+  },
+  {
+    validation: isMap,
+    copy: copyMap,
   },
   {
     validation: isObject,

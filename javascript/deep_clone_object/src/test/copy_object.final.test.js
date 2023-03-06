@@ -78,16 +78,10 @@ describe('copy object', () => {
   });
 
   it('returns deep copy of typedArray', () => {
-    const buffer = new ArrayBuffer(8);
-    const typedArray = new Int8Array(buffer);
-    const typedArray1 = new Int8Array(typedArray);
-    const typedArray2 = new Int16Array(buffer);
-    const typedArray3 = new Int8Array(typedArray2);
-    typedArray[0] = 32;
+    const typedArray = new Int8Array(8);
 
-    console.log(typedArray1);
-    console.log(typedArray);
-    console.log(typedArray2);
-    console.log(typedArray3 instanceof Int16Array);
+    const deepCopiedTypedArray = deepCopy(typedArray);
+
+    expect(deepCopiedTypedArray).not.toBe(typedArray);
   });
 });
